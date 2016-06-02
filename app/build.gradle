@@ -56,7 +56,11 @@ def appendVersionName(variant, defaultConfig) {
 dependencies {
     compile fileTree(include: ['*.jar'], dir: 'libs')
     testCompile 'junit:junit:4.12'
+    compile 'com.squareup.retrofit2:retrofit:2.0.2'
     compile 'com.android.support:appcompat-v7:23.3.0'
     compile 'com.android.support:design:23.3.0'
     compile 'com.jakewharton:butterknife:7.0.1'
+    compile group: 'com.alibaba', name: 'fastjson', version: '1.2.7'
+    compile group: 'com.squareup.retrofit2', name: 'converter-gson', version: '2.0.2'
+
 }

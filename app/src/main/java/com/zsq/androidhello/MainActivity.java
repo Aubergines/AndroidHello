@@ -15,12 +15,23 @@ import android.view.Window;
 import android.widget.Button;
 import android.widget.Toast;
 
+import com.alibaba.fastjson.JSON;
 import com.baidu.mapapi.SDKInitializer;
 import com.baidu.mapapi.map.MapView;
+import com.zsq.model.Repo;
+import com.zsq.model.User;
+import com.zsq.web.HttpService;
+
+import java.util.List;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import retrofit2.Retrofit;
+import retrofit2.converter.gson.GsonConverterFactory;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -71,7 +82,51 @@ public class MainActivity extends AppCompatActivity {
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.btn_my:
-                Toast.makeText(MainActivity.this, "YES", Toast.LENGTH_LONG).show();
+//                Retrofit retrofit = new Retrofit.Builder()
+//                        .addConverterFactory(GsonConverterFactory.create())
+//                        .baseUrl("https://api.github.com/")
+//                        .build();
+//                HttpService service = retrofit.create(HttpService.class);
+//                Call<List<Repo>> repos = service.listRepos("aubergines");
+//                repos.enqueue(new Callback<List<Repo>>() {
+//                    @Override
+//                    public void onResponse(Call<List<Repo>> call, Response<List<Repo>> response) {
+//                        Log.e("====", JSON.toJSONString(response));
+//                        Log.i("info","====---==="+(List<Repo>)response.body());
+//                        List<Repo> reposBody = (List<Repo>) response.body();
+//                        for (Repo oneRepo : reposBody) {
+//                            System.out.println(oneRepo.getArchive_url());
+//                        }
+//                    }
+//                    @Override
+//                    public void onFailure(Call<List<Repo>> call, Throwable t) {
+//
+//                    }
+//                });
+
+                Retrofit retrofit = new Retrofit.Builder()
+                        .addConverterFactory(GsonConverterFactory.create())
+                        .baseUrl("http://115.28.87.77/WebProject/getUser/")
+                        .build();
+                HttpService service = retrofit.create(HttpService.class);
+                Call<List<User>> users = service.listUsers();
+                users.enqueue(new Callback<List<User>>() {
+                    @Override
+                    public void onResponse(Call<List<User>> call, Response<List<User>> response) {
+                        Log.e("====", JSON.toJSONString(response));
+                        Log.i("info","====---==="+(List<User>)response.body());
+                        List<User> reposBody = (List<User>) response.body();
+                        for (User oneUser : reposBody) {
+                            System.out.println(oneUser.getDeptCode());
+                        }
+                    }
+                    @Override
+                    public void onFailure(Call<List<User>> call, Throwable t) {
+
+                    }
+                });
+
+//                Toast.makeText(MainActivity.this, "YES", Toast.LENGTH_LONG).show();
                 break;
             case R.id.btn_two:
                 String data = "Hello SecondActivity";
