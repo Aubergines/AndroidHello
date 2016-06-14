@@ -1,161 +1,149 @@
 package com.zsq.androidhello;
 
+import android.Manifest;
+import android.annotation.TargetApi;
+import android.app.Activity;
 import android.content.Intent;
-import android.net.Uri;
+import android.content.pm.PackageManager;
+import android.os.Build;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
-import android.util.Log;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
-import android.view.Window;
-import android.widget.Button;
-import android.widget.Toast;
+import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemClickListener;
+import android.widget.ArrayAdapter;
+import android.widget.ListView;
 
-import com.alibaba.fastjson.JSON;
-import com.baidu.mapapi.SDKInitializer;
-import com.baidu.mapapi.map.MapView;
-import com.zsq.model.Repo;
-import com.zsq.model.User;
-import com.zsq.web.HttpService;
-
+import java.util.ArrayList;
 import java.util.List;
 
-import butterknife.Bind;
-import butterknife.ButterKnife;
-import butterknife.OnClick;
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
-import retrofit2.Retrofit;
-import retrofit2.converter.gson.GsonConverterFactory;
+/***
+ * 本类代码同定位业务本身无关，负责现实列表
+ * 
+ * @author baidu
+ *
+ */
+public class MainActivity extends Activity {
+	private final int SDK_PERMISSION_REQUEST = 127;
+	private ListView FunctionList;
+	private String permissionInfo;
+	@Override
+	protected void onCreate(Bundle savedInstanceState) {
+		super.onCreate(savedInstanceState);
+		setContentView(R.layout.function_list);
+		FunctionList = (ListView) findViewById(R.id.functionList);
+		FunctionList
+				.setAdapter(new ArrayAdapter<String>(this, android.R.layout.simple_expandable_list_item_1, getData()));
 
-public class MainActivity extends AppCompatActivity {
+		// after andrioid m,must request Permiision on runtime
+		getPersimmions();
+	}
 
-    @Bind(R.id.toolbar)
-    Toolbar toolbar;
-    @Bind(R.id.btn_my)
-    Button btnMy;
-    @Bind(R.id.fab)
-    FloatingActionButton fab;
-    @Bind(R.id.btn_two)
-    Button btnTwo;
-    @Bind(R.id.btnmain_three)
-    Button btnmainThree;
+	@TargetApi(23)
+	private void getPersimmions() {
+		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+			ArrayList<String> permissions = new ArrayList<String>();
+			/***
+			 * 定位权限为必须权限，用户如果禁止，则每次进入都会申请
+			 */
+			// 定位精确位置
+			if(checkSelfPermission(Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED){
+				permissions.add(Manifest.permission.ACCESS_FINE_LOCATION);
+			}
+			if(checkSelfPermission(Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED){
+				permissions.add(Manifest.permission.ACCESS_COARSE_LOCATION);
+			}
+			/*
+			 * 读写权限和电话状态权限非必要权限(建议授予)只会申请一次，用户同意或者禁止，只会弹一次
+			 */
+			// 读写权限
+			if (addPermission(permissions, Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
+				permissionInfo += "Manifest.permission.WRITE_EXTERNAL_STORAGE Deny \n";
+			}
+			// 读取电话状态权限
+			if (addPermission(permissions, Manifest.permission.READ_PHONE_STATE)) {
+				permissionInfo += "Manifest.permission.READ_PHONE_STATE Deny \n";
+			}
+			
+			if (permissions.size() > 0) {
+				requestPermissions(permissions.toArray(new String[permissions.size()]), SDK_PERMISSION_REQUEST);
+			}
+		}
+	}
 
+	@TargetApi(23)
+	private boolean addPermission(ArrayList<String> permissionsList, String permission) {
+		if (checkSelfPermission(permission) != PackageManager.PERMISSION_GRANTED) { // 如果应用没有获得对应权限,则添加到列表中,准备批量申请	
+			if (shouldShowRequestPermissionRationale(permission)){
+				return true;
+			}else{
+				permissionsList.add(permission);
+				return false;
+			}
+				
+		}else{
+			return true;
+		}
+	}
 
+	@TargetApi(23)
+	@Override
+	public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+		// TODO Auto-generated method stub
+		super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+		
+	}
 
+	@Override
+	protected void onStart() {
+		// TODO Auto-generated method stub
+		super.onStart();
+		FunctionList.setOnItemClickListener(new OnItemClickListener() {
 
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        requestWindowFeature(Window.FEATURE_NO_TITLE);
-        setContentView(R.layout.activity_main);
-        ButterKnife.bind(this);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
-    }
+			@Override
+			public void onItemClick(AdapterView<?> arg0, View arg1, int arg2, long arg3) {
+				// TODO Auto-generated method stub
+				Class<?> TargetClass = null;
+				switch (arg2) {
+				case 0:
+					TargetClass = LocationActivity.class;
+					break;
+				case 1:
+					TargetClass = LocationOption.class;
+					break;
+				case 2:
+					TargetClass = LocationAutoNotify.class;
+					break;
+				case 3:
+					TargetClass = LocationFilter.class;
+					break;
+				case 4:
+					TargetClass = NotifyActivity.class;
+					break;
+				case 5:
+					TargetClass = QuestActivity.class;
+					break;
+				default:
+					break;
+				}
+				if (TargetClass != null) {
+					Intent intent = new Intent(MainActivity.this, TargetClass);
+					intent.putExtra("from", 0);
+					startActivity(intent);
+				}
+			}
+		});
+	}
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.menu_main, menu);
-        return true;
-    }
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case R.id.action_settings:
-                Toast.makeText(this, "setting", Toast.LENGTH_SHORT).show();
-                break;
-            case R.id.action_add:
-                Toast.makeText(this, "add", Toast.LENGTH_SHORT).show();
-                break;
-            default:
-        }
-        return true;
-    }
+	private List<String> getData() {
 
-    @OnClick({R.id.toolbar, R.id.btn_my, R.id.fab, R.id.btn_two,R.id.btnmain_three})
-    public void onClick(View view) {
-        switch (view.getId()) {
-            case R.id.btn_my:
-//                Retrofit retrofit = new Retrofit.Builder()
-//                        .addConverterFactory(GsonConverterFactory.create())
-//                        .baseUrl("https://api.github.com/")
-//                        .build();
-//                HttpService service = retrofit.create(HttpService.class);
-//                Call<List<Repo>> repos = service.listRepos("aubergines");
-//                repos.enqueue(new Callback<List<Repo>>() {
-//                    @Override
-//                    public void onResponse(Call<List<Repo>> call, Response<List<Repo>> response) {
-//                        Log.e("====", JSON.toJSONString(response));
-//                        Log.i("info","====---==="+(List<Repo>)response.body());
-//                        List<Repo> reposBody = (List<Repo>) response.body();
-//                        for (Repo oneRepo : reposBody) {
-//                            System.out.println(oneRepo.getArchive_url());
-//                        }
-//                    }
-//                    @Override
-//                    public void onFailure(Call<List<Repo>> call, Throwable t) {
-//
-//                    }
-//                });
+		List<String> data = new ArrayList<String>();
+		data.add("基础定位功能");
+		data.add("配置定位参数");
+		data.add("自定义回调示例");
+		data.add("连续定位示例");
+		data.add("位置消息提醒");
+		data.add("常见问题说明");
 
-                Retrofit retrofit = new Retrofit.Builder()
-                        .addConverterFactory(GsonConverterFactory.create())
-                        .baseUrl("http://115.28.87.77/WebProject/getUser/")
-                        .build();
-                HttpService service = retrofit.create(HttpService.class);
-                Call<List<User>> users = service.listUsers();
-                users.enqueue(new Callback<List<User>>() {
-                    @Override
-                    public void onResponse(Call<List<User>> call, Response<List<User>> response) {
-                        Log.e("====", JSON.toJSONString(response));
-                        Log.i("info","====---==="+(List<User>)response.body());
-                        List<User> reposBody = (List<User>) response.body();
-                        for (User oneUser : reposBody) {
-                            System.out.println(oneUser.getDeptCode());
-                        }
-                    }
-                    @Override
-                    public void onFailure(Call<List<User>> call, Throwable t) {
-
-                    }
-                });
-
-//                Toast.makeText(MainActivity.this, "YES", Toast.LENGTH_LONG).show();
-                break;
-            case R.id.btn_two:
-                String data = "Hello SecondActivity";
-                Intent intent = new Intent("com.zsq.androidhello.SECTION_START");
-//                intent.putExtra("data",data);
-                startActivityForResult(intent,1);
-                break;
-            case R.id.btnmain_three:
-                Intent intentLocation = new Intent("com.zsq.androidhello.THIRD_ACTIVITY");
-                startActivity(intentLocation);
-                break;
-            case R.id.fab:
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
-                break;
-        }
-    }
-
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-
-        switch (requestCode){
-            case 1:
-                if (resultCode == RESULT_OK){
-                    String returnedData = data.getStringExtra("data");
-                    Log.d("FirstActivity",returnedData);
-                }
-                break;
-            default:
-        }
-    }
+		return data;
+	}
 }

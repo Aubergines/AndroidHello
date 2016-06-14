@@ -1,3 +1,4 @@
+/*
 package com.zsq.androidhello;
 
 import android.app.Activity;
@@ -12,9 +13,11 @@ import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
+*/
 /**
  * Created by china on 2016/5/26.
- */
+ *//*
+
 public class SecondActivity extends Activity {
 
     @Bind(R.id.btn_2)
@@ -42,3 +45,4 @@ public class SecondActivity extends Activity {
     public void onClick() {
     }
 }
+*/
