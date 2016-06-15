@@ -1,13 +1,15 @@
 package com.zsq.web;
 
+import com.zsq.model.Customer;
 import com.zsq.model.Repo;
-import com.zsq.model.User;
 
 import java.util.List;
 
+import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.http.GET;
 import retrofit2.http.Path;
+import retrofit2.http.Query;
 
 /**
  * Created by china on 2016/6/2.
@@ -39,6 +41,9 @@ public interface HttpService {
     @GET("users/{user}/repos")
     Call<List<Repo>> listRepos(@Path("user") String user);
 
+    @GET("user")
+    Call<Customer> createQuote(@Query("id") String id);
+
 
 //    Retrofit retrofit = new Retrofit.Builder()
 //            .addConverterFactory(GsonConverterFactory.create())
@@ -62,5 +67,5 @@ public interface HttpService {
 //        }
 //    });
     @GET("test")
-    Call<List<User>> listUsers();
+    Call<List<?>> listUsers();
 }
