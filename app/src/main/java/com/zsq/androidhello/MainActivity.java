@@ -17,10 +17,13 @@ import android.widget.ListView;
 import com.alibaba.fastjson.JSON;
 import com.zsq.model.Customer;
 import com.zsq.model.Repo;
+import com.zsq.util.ParamUtil;
 import com.zsq.web.HttpService;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import okhttp3.ResponseBody;
 import retrofit2.Call;
@@ -136,21 +139,32 @@ public class MainActivity extends Activity {
                         TargetClass = QuestActivity.class;
                         break;
                     case 6:
+                        Map<String,Object> map = new HashMap<String, Object>();
+                        map.put("logoUseFlag","4");
+                        map.put("visitSiteId",6);
+                        map.put("customerId",1461229672002L);
+                        map.put("sessionId","a6ff208550dda7e24be9bc343566989c");
+                        Map<String,Object> param = new HashMap<String, Object>();
+                        param.put("queryJson",JSON.toJSONString(map).toString());
                         Retrofit retrofit = new Retrofit.Builder()
                                 .addConverterFactory(GsonConverterFactory.create())
-                                .baseUrl("http://192.168.1.107:8089/customer/")
+                                .baseUrl("http://android1.api.allinmd.cn:18080/services/customer/unite/v2/")
                                 .build();
                         HttpService service = retrofit.create(HttpService.class);
-                        Call<Customer> repos = service.createQuote("1397586889599");
-                        repos.enqueue(new Callback<Customer>() {
+
+
+
+                        Log.e("**************",JSON.toJSONString(map).toString());
+                        Call<String> repos = service.createQuote(JSON.toJSONString(map).toString());
+                        repos.enqueue(new Callback<String>() {
                             @Override
-                            public void onResponse(Call<Customer> call, Response<Customer> response) {
+                            public void onResponse(Call<String> call, Response<String> response) {
                                 Log.e("====", JSON.toJSONString(response));
                                 Log.e("====", JSON.toJSONString(response.body()));
                             }
 
                             @Override
-                            public void onFailure(Call<Customer> call, Throwable t) {
+                            public void onFailure(Call<String> call, Throwable t) {
 
                                 Log.e("====","--------------"+t.toString());
                             }

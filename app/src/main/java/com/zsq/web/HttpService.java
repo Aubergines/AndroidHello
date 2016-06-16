@@ -4,6 +4,7 @@ import com.zsq.model.Customer;
 import com.zsq.model.Repo;
 
 import java.util.List;
+import java.util.Map;
 
 import okhttp3.ResponseBody;
 import retrofit2.Call;
@@ -41,8 +42,8 @@ public interface HttpService {
     @GET("users/{user}/repos")
     Call<List<Repo>> listRepos(@Path("user") String user);
 
-    @GET("user")
-    Call<Customer> createQuote(@Query("id") String id);
+    @GET("getMapById/")
+    Call<String> createQuote(@Query("queryJson") String queryJson);
 
 
 //    Retrofit retrofit = new Retrofit.Builder()
