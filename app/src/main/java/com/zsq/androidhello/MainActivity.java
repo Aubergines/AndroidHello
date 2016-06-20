@@ -144,27 +144,36 @@ public class MainActivity extends Activity {
                         map.put("visitSiteId",6);
                         map.put("customerId",1461229672002L);
                         map.put("sessionId","a6ff208550dda7e24be9bc343566989c");
+                        map.put("firstResult", 0);
+                        map.put("visitSiteId", 6);
+                        map.put("isValid", 1);
+                        map.put("pageSize", 10);
+                        map.put("sortType", 1);
+                        map.put("pageIndex", 1);
+                        map.put("maxResult", 10);
+                        map.put("searchParam", "关节");
+                        map.put("treeLevel", "2_3");
                         Map<String,Object> param = new HashMap<String, Object>();
                         param.put("queryJson",JSON.toJSONString(map).toString());
                         Retrofit retrofit = new Retrofit.Builder()
                                 .addConverterFactory(GsonConverterFactory.create())
-                                .baseUrl("http://android1.api.allinmd.cn:18080/services/customer/unite/v2/")
+                                .baseUrl("http://android1.api.allinmd.cn:18080/services/comm/data/tag/v2/getMapList/")
                                 .build();
                         HttpService service = retrofit.create(HttpService.class);
 
 
 
                         Log.e("**************",JSON.toJSONString(map).toString());
-                        Call<String> repos = service.createQuote(JSON.toJSONString(map).toString());
-                        repos.enqueue(new Callback<String>() {
+                        Call<Map> repos = service.createQuote("4",6,1461229672002L);
+                        repos.enqueue(new Callback<Map>() {
                             @Override
-                            public void onResponse(Call<String> call, Response<String> response) {
+                            public void onResponse(Call<Map> call, Response<Map> response) {
                                 Log.e("====", JSON.toJSONString(response));
                                 Log.e("====", JSON.toJSONString(response.body()));
                             }
 
                             @Override
-                            public void onFailure(Call<String> call, Throwable t) {
+                            public void onFailure(Call<Map> call, Throwable t) {
 
                                 Log.e("====","--------------"+t.toString());
                             }

@@ -42,8 +42,8 @@ public interface HttpService {
     @GET("users/{user}/repos")
     Call<List<Repo>> listRepos(@Path("user") String user);
 
-    @GET("getMapById/")
-    Call<String> createQuote(@Query("queryJson") String queryJson);
+    @GET("getMapList/")
+    Call<Map> createQuote(@Query("logoUseFlag") String logoUseFlag,@Query("visitSiteId") int visitSiteId,@Query("customerId") Long customerId);
 
 
 //    Retrofit retrofit = new Retrofit.Builder()
