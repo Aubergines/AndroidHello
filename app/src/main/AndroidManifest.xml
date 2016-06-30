@@ -72,6 +72,7 @@
         <activity android:name=".NotifyActivity"></activity>
         <activity android:name=".QuestActivity"></activity>
         <activity android:name=".LocationAutoNotify"></activity>
+        <activity android:name=".PhotoUpload"></activity>
     </application>
 
 </manifest>

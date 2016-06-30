@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.StrictMode;
 import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
@@ -17,7 +18,6 @@ import android.widget.ListView;
 import com.alibaba.fastjson.JSON;
 import com.zsq.model.Customer;
 import com.zsq.model.Repo;
-import com.zsq.util.ParamUtil;
 import com.zsq.web.HttpService;
 
 import java.util.ArrayList;
@@ -46,6 +46,9 @@ public class MainActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.function_list);
+        if (android.os.Build.VERSION.SDK_INT > 9) {
+            StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
+            StrictMode.setThreadPolicy(policy);}
         FunctionList = (ListView) findViewById(R.id.functionList);
         FunctionList
                 .setAdapter(new ArrayAdapter<String>(this, android.R.layout.simple_expandable_list_item_1, getData()));
@@ -143,7 +146,7 @@ public class MainActivity extends Activity {
                         map.put("logoUseFlag","4");
                         map.put("visitSiteId",6);
                         map.put("customerId",1461229672002L);
-                        map.put("sessionId","a6ff208550dda7e24be9bc343566989c");
+                        map.put("sessionId","4836843053a2bcc90b1c045813d66bab");
                         map.put("firstResult", 0);
                         map.put("visitSiteId", 6);
                         map.put("isValid", 1);
@@ -157,7 +160,7 @@ public class MainActivity extends Activity {
                         param.put("queryJson",JSON.toJSONString(map).toString());
                         Retrofit retrofit = new Retrofit.Builder()
                                 .addConverterFactory(GsonConverterFactory.create())
-                                .baseUrl("http://android1.api.allinmd.cn:18080/services/comm/data/tag/v2/getMapList/")
+                                .baseUrl("http://192.168.1.32:18080/services/comm/data/tag/v2/getMapList/")
                                 .build();
                         HttpService service = retrofit.create(HttpService.class);
 
@@ -178,6 +181,9 @@ public class MainActivity extends Activity {
                                 Log.e("====","--------------"+t.toString());
                             }
                         });
+                        break;
+                    case 7:
+                        TargetClass = PhotoUpload.class;
                         break;
                     default:
                         break;
@@ -201,6 +207,7 @@ public class MainActivity extends Activity {
         data.add("位置消息提醒");
         data.add("常见问题说明");
         data.add("请求唯医接口");
+        data.add("测试唯医上传图片");
 
         return data;
     }
